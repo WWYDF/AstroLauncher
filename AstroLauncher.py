@@ -245,7 +245,7 @@ class AstroLauncher():
             self.version = ALVERSION
             colsize = os.get_terminal_size().columns
             if colsize >= 77:
-                vText = "Version " + self.version[1:]
+                vText = "Version " + self.version[1:] + " (WWYDF Edit)"
                 # pylint: disable=anomalous-backslash-in-string
                 print(" __________________________________________________________________________\n" +
                       "|     _        _               _                           _               |\n" +
