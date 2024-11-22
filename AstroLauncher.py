@@ -261,11 +261,11 @@ class AstroLauncher():
             AstroLogging.logPrint(
                 "If you encounter any bugs please open a new issue at:")
             AstroLogging.logPrint(
-                "https://github.com/ricky-davis/AstroLauncher/issues")
+                "https://github.com/WWYDF/AstroLauncher/issues")
             AstroLogging.logPrint(
                 "To safely stop the launcher and server press CTRL+C")
 
-            self.latestURL = "https://github.com/ricky-davis/AstroLauncher/releases/latest"
+            self.latestURL = "https://github.com/WWYDF/AstroLauncher/releases/latest"
             bName = ntpath.basename(sys.executable)
             if sys.argv[0] == ntpath.splitext(bName)[0]:
                 self.isExecutable = True
@@ -585,7 +585,7 @@ class AstroLauncher():
 
     def check_for_launcher_update(self, serverStart=False):
         try:
-            url = "https://api.github.com/repos/ricky-davis/AstroLauncher/releases/latest"
+            url = "https://api.github.com/repos/WWYDF/AstroLauncher/releases/latest"
             data = json.load((AstroRequests.get(url)))
             latestVersion = data['tag_name']
 
