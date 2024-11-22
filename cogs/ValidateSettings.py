@@ -8,6 +8,7 @@ import threading
 import time
 import uuid
 from contextlib import contextmanager
+import http.client
 
 from IPy import IP
 
@@ -248,17 +249,29 @@ def test_network(ip, port, tcp):
 
 
 def test_nonlocal(ip, port):
+    # Start the socket server in a separate thread
     x = threading.Thread(target=socket_server2, args=(port,))
     x.start()
     try:
-        r = json.load(AstroRequests.post(
-            f"https://servercheck.spycibot.com/api?ip_port={ip}:{port}", timeout=10))
-    except:
-        AstroLogging.logPrint(
-            "Unable to verify outside connectivity.", "warning")
-        AstroLogging.logPrint(
-            "Connection to external service failed.", "warning")
+        # Create the connection to portchecker.io
+        conn = http.client.HTTPSConnection("portchecker.io", timeout=10)
+        # Make the GET request
+        conn.request("GET", f"/api/{ip}/{port}")
+        # Get the response
+        response = conn.getresponse()
+        if response.status != 200:
+            raise Exception(f"HTTP Error {response.status}: {response.reason}")
+        # Read the raw response (not JSON)
+        raw_response = response.read().decode('utf-8').strip()
+        # Convert the response to boolean
+        result = raw_response.lower() == "true"
+    except Exception as e:
+        AstroLogging.logPrint("Unable to verify outside connectivity.", "warning")
+        AstroLogging.logPrint(f"Connection to external service failed: {e}", "warning")
         return False
+    finally:
+        # Ensure the connection is closed
+        conn.close()
 
-    AstroLogging.logPrint(r, "debug")
-    return r['Server']
+    AstroLogging.logPrint(f"Raw response: {raw_response}", "debug")
+    return result
